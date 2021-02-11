@@ -6,15 +6,15 @@ const models = require('../models');
 const { ApplicationError } = require('../utils/errors');
 const { getAsync } = require('../utils/redis');
 
-const { user } = models;
+const { users } = models;
 
 module.exports = {
   authenticate: catchAsync(async (req, res, next) => {
     let token;
     //  Check if token is in header
     if (
-      req.headers.authorization
-      && req.headers.authorization.startsWith('Bearer')
+      req.headers.authorization &&
+      req.headers.authorization.startsWith('Bearer')
     ) {
       token = req.headers.authorization.split(' ')[1];
     } else if (req.cookies.wallet1313) {
@@ -32,7 +32,7 @@ module.exports = {
     const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
     // Check if user exists
-    const currentUser = await user.findByPk(decoded.id);
+    const currentUser = await users.findByPk(decoded.id);
     if (!currentUser) {
       return next(new ApplicationError(401, 'Invalid Token'));
     }

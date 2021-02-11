@@ -31,7 +31,19 @@ class BadRequestError extends ApplicationError {
   }
 }
 
+class NotFoundError extends ApplicationError {
+  /**
+   * @description initialize error class
+   *
+   * @param {string} message error message
+   */
+  constructor(message, data) {
+    super(404, message || 'Resource not found', data);
+  }
+}
+
 module.exports = {
   ApplicationError,
   BadRequestError,
+  NotFoundError,
 };

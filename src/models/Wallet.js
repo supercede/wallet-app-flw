@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Wallet.belongsTo(models.users);
-      //   Wallet.hasMany(models.transactions);
+      Wallet.hasMany(models.transactions);
     }
   }
   Wallet.init(
