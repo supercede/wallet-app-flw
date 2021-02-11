@@ -4,7 +4,7 @@ const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const errorHandler = require('./middleware/errorHandler');
-// const routes = require('./routes');
+const routes = require('./routes');
 
 config();
 
@@ -16,7 +16,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(morgan('dev'));
 app.use(cookieParser());
 
-// app.use('/api/v1', routes);
+app.use('/api/v1', routes);
 
 app.get('/', (_, response) => {
   response.status(200).json({

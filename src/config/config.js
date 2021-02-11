@@ -1,3 +1,5 @@
+/* eslint-disable implicit-arrow-linebreak,no-confusing-arrow */
+
 const dotenv = require('dotenv');
 
 dotenv.config();
@@ -8,8 +10,16 @@ module.exports = {
     password: process.env.DB_PASSWORD,
     database: process.env.DB_DATABASE,
     host: process.env.DB_HOST,
-    logging: false,
     dialect: 'mysql',
+    logQueryParameters: true,
+    define: {
+      timestamps: true,
+      underscored: true,
+    },
+    logging: str =>
+      process.env.SHOW_SQL_LOGS
+        ? console.log(`[SEQUELIZE DATABASE] ${str}`)
+        : null,
   },
 
   staging: {
@@ -17,6 +27,10 @@ module.exports = {
     password: process.env.DB_PASSWORD,
     database: process.env.DB_TEST_DATABASE,
     host: process.env.DB_HOST,
+    define: {
+      timestamps: true,
+      underscored: true,
+    },
     dialect: 'mysql',
   },
 
@@ -34,6 +48,10 @@ module.exports = {
     password: process.env.DB_PASSWORD,
     database: process.env.DB_DATABASE,
     host: process.env.DB_HOST,
+    define: {
+      timestamps: true,
+      underscored: true,
+    },
     dialect: 'mysql',
   },
 };

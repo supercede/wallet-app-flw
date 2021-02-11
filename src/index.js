@@ -23,6 +23,8 @@ process.on('unhandledRejection', err => {
 
 server.listen(PORT, () => {
   DEBUG(
-    `server running on http://localhost:${PORT} in ${process.env.NODE_ENV} mode.\nPress CTRL-C to stop`,
+    `server running on http://localhost:${PORT} in ${
+      process.env.NODE_ENV || 'development'
+    } mode.\nPress CTRL-C to stop`,
   );
 });
