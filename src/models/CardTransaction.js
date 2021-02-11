@@ -1,19 +1,17 @@
 const { Model } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
-  class Wallet extends Model {
+  class CardTransaction extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Wallet.belongsTo(models.users);
-      Wallet.hasMany(models.transactions);
-      Wallet.hasMany(models.card_transactions);
+      CardTransaction.belongsTo(models.wallets);
     }
   }
-  Wallet.init(
+  CardTransaction.init(
     {
       id: {
         type: DataTypes.UUID,
@@ -21,34 +19,48 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         allowNull: false,
       },
-      user_id: {
+      external_reference: {
+        type: DataTypes.STRING,
+        // unique: true,
+      },
+      reference: {
         type: DataTypes.UUID,
-        allowNull: false,
         unique: true,
       },
-      balance: {
+
+      wallet_id: {
+        type: DataTypes.UUID,
+        allowNull: false,
+      },
+      amount: {
         type: DataTypes.DECIMAL(20, 4).UNSIGNED,
         allowNull: false,
       },
+      status: {
+        type: DataTypes.ENUM('success', 'fail', 'pending'),
+      },
+      failure_reason: {
+        type: DataTypes.STRING,
+      },
       created_at: {
         type: DataTypes.DATE,
-        allowNull: false,
         defaultValue: DataTypes.NOW,
+        allowNull: false,
       },
       updated_at: {
         type: DataTypes.DATE,
-        allowNull: false,
         defaultValue: DataTypes.NOW,
+        allowNull: false,
       },
     },
     {
       sequelize,
-      modelName: 'wallets',
+      modelName: 'card_transactions',
       underscored: true,
     },
   );
 
-  Wallet.prototype.toJSON = function () {
+  CardTransaction.prototype.toJSON = function () {
     const values = { ...this.get() };
 
     delete values.createdAt;
@@ -56,5 +68,5 @@ module.exports = (sequelize, DataTypes) => {
     return values;
   };
 
-  return Wallet;
+  return CardTransaction;
 };
