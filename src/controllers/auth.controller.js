@@ -1,8 +1,10 @@
+const debug = require('debug');
 const models = require('../models');
 const { ApplicationError } = require('../utils/errors');
 const { client } = require('../utils/redis');
 
-const { users } = models;
+const { users, wallets, sequelize } = models;
+const DEBUG = debug('dev');
 
 /**
  * @function createCookieAndToken
@@ -53,21 +55,45 @@ module.exports = {
    * @returns {Function} creates a cookie from the response
    */
   signup: async (request, response) => {
-    const { name, password, email } = request.body;
+    let trx;
+    try {
+      const { name, password, email } = request.body;
+      trx = await sequelize.transaction();
 
-    const checkuser = await users.getExistinguser(email);
+      const checkuser = await users.getExistinguser(email);
 
-    if (checkuser) {
-      throw new ApplicationError(409, 'Email exists, please try another');
+      if (checkuser) {
+        throw new ApplicationError(409, 'Email exists, please try another');
+      }
+
+      const newUser = await users.create(
+        {
+          name,
+          password,
+          email,
+        },
+        {
+          transaction: trx,
+        },
+      );
+
+      await wallets.create(
+        {
+          user_id: newUser.id,
+          balance: 500000,
+        },
+        {
+          transaction: trx,
+        },
+      );
+
+      await trx.commit();
+      await createCookieAndToken(newUser, 201, request, response);
+    } catch (err) {
+      await trx.rollback();
+      DEBUG(err);
+      throw new ApplicationError(500);
     }
-
-    const newUser = await users.create({
-      name,
-      password,
-      email,
-    });
-
-    await createCookieAndToken(newUser, 201, request, response);
   },
 
   /**
