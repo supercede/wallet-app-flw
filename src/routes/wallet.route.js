@@ -7,7 +7,7 @@ const catchAsync = require('../utils/catchAsync');
 
 const { authenticate } = authentication;
 const { fundWalletSchema } = walletValidation;
-const { getWallet, fundWallet, validatePaymentManual } = walletController;
+const { getWallet, fundWallet, validatePayment } = walletController;
 
 const walletRouter = Router();
 
@@ -17,7 +17,7 @@ walletRouter.post(
   validator(fundWalletSchema),
   catchAsync(fundWallet),
 );
-walletRouter.post('/funding/validate', catchAsync(validatePaymentManual));
+walletRouter.post('/funding/validate', catchAsync(validatePayment));
 
 walletRouter.get('/', authenticate, getWallet);
 

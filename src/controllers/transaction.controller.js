@@ -74,7 +74,7 @@ module.exports = {
 
       await trx.commit();
       return response.status(200).json({
-        success: true,
+        status: 'success',
         message: 'transfer successful',
       });
     } catch (error) {

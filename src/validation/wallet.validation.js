@@ -28,4 +28,12 @@ module.exports = {
     check('cvv').not().isEmpty().withMessage('card cvv is required'),
     check('pin').not().isEmpty().withMessage('card pin is required'),
   ],
+
+  verifyFundingSchema: [
+    check('flwRef')
+      .not()
+      .isEmpty()
+      .withMessage('flutterwave reference is required'),
+    check('otp').not().isEmpty().withMessage('OTP is required'),
+  ],
 };
