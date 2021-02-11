@@ -92,7 +92,7 @@ module.exports = {
     } catch (err) {
       await trx.rollback();
       DEBUG(err);
-      throw new ApplicationError(500);
+      throw err;
     }
   },
 
